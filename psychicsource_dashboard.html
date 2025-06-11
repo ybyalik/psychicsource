@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PsychicSource Strategy Dashboard</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8ebff 100%);
+            color: #374151;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+        .header h1 {
+            color: #7C3AED;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .header .subtitle {
+            color: #6B7280;
+            font-size: 16px;
+            font-weight: 400;
+        }
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 30px;
+            justify-content: center;
+            background: white;
+            padding: 16px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.1);
+        }
+        .tab {
+            background: #F3F4F6;
+            color: #6B7280;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        .tab:hover {
+            background: #EDE9FE;
+            color: #7C3AED;
+        }
+        .tab.active {
+            background: #7C3AED;
+            color: white;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            min-height: 500px;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.1);
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        .card {
+            background: #F9FAFB;
+            padding: 24px;
+            margin: 20px 0;
+            border-radius: 12px;
+            border-left: 4px solid #7C3AED;
+            border: 1px solid #E5E7EB;
+            transition: all 0.2s ease;
+        }
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.1);
+            transform: translateY(-1px);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        h2 {
+            color: #7C3AED;
+            border-bottom: 2px solid #A855F7;
+            padding-bottom: 12px;
+            font-weight: 600;
+            font-size: 24px;
+        }
+        h3 {
+            color: #7C3AED;
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+        .tag {
+            background: #EDE9FE;
+            color: #7C3AED;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            margin: 4px;
+            display: inline-block;
+            border: 1px solid rgba(124, 58, 237, 0.2);
+        }
+        .doc-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin: 16px 0;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.1);
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .doc-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.15);
+        }
+        .doc-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .doc-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #7C3AED, #A855F7);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .doc-info {
+            flex: 1;
+        }
+        .doc-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+        .doc-category {
+            background: #EDE9FE;
+            color: #7C3AED;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        .doc-description {
+            color: #6B7280;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+        .doc-features {
+            list-style: none;
+            padding: 0;
+            margin: 16px 0;
+        }
+        .doc-features li {
+            color: #7C3AED;
+            font-size: 14px;
+            margin-bottom: 8px;
+            padding-left: 16px;
+            position: relative;
+        }
+        .doc-features li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        .doc-button {
+            background: linear-gradient(135deg, #7C3AED, #A855F7);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+        }
+        .doc-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        }
+        .status-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #10B981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin: 24px 0;
+        }
+        .calendar-week {
+            margin-bottom: 32px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.1);
+        }
+        .week-header {
+            background: linear-gradient(135deg, #7C3AED, #A855F7);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .week-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .week-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: 100px repeat(3, 1fr);
+            gap: 1px;
+            background: #E5E7EB;
+        }
+        .calendar-header {
+            background: #F9FAFB;
+            padding: 12px;
+            font-weight: 600;
+            text-align: center;
+            color: #374151;
+            font-size: 14px;
+        }
+        .day-cell {
+            background: #F9FAFB;
+            padding: 12px 8px;
+            font-weight: 600;
+            text-align: center;
+            color: #7C3AED;
+        }
+        .content-cell {
+            background: white;
+            padding: 12px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+        }
+        .crisis-content {
+            background: #FEF2F2;
+            border-left: 3px solid #EF4444;
+        }
+        .support-content {
+            background: #F0FDF4;
+            border-left: 3px solid #22C55E;
+        }
+        .trust-content {
+            background: #EFF6FF;
+            border-left: 3px solid #3B82F6;
+        }
+        .proof-content {
+            background: #FDF4FF;
+            border-left: 3px solid #A855F7;
+        }
+        .pillar-summary {
+            background: #F9FAFB;
+            padding: 20px;
+            border-top: 1px solid #E5E7EB;
+        }
+        .pillar-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .pillar-stat {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid #7C3AED;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #7C3AED;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #6B7280;
+            margin-bottom: 8px;
+        }
+        .tier-breakdown {
+            font-size: 12px;
+            color: #6B7280;
+            margin-top: 8px;
+        }
+        .focus-legend {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.1);
+        }
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #F9FAFB;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        .crisis-color { background: #EF4444; }
+        .support-color { background: #22C55E; }
+        .trust-color { background: #3B82F6; }
+        .proof-color { background: #A855F7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔮 PsychicSource Strategy Guide</h1>
+            <p>Crisis Response System, Content Strategy & Implementation Guide</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showSection('overview')">📋 Strategy Overview</button>
+            <button class="tab" onclick="showSection('personas')">👥 Target Personas</button>
+            <button class="tab" onclick="showSection('content')">📝 Content Strategy</button>
+            <button class="tab" onclick="showSection('calendar')">📅 Focus Calendar</button>
+            <button class="tab" onclick="showSection('platforms')">📱 Platform Strategy</button>
+            <button class="tab" onclick="showSection('seasonal')">📅 Seasonal Planning</button>
+            <button class="tab" onclick="showSection('crisis')">🚨 Crisis Response</button>
+            <button class="tab" onclick="showSection('documents')">📁 Documents</button>
+        </div>
+
+        <div class="content">
+            <!-- Documents -->
+            <div id="documents" class="section">
+                <h2>📁 Strategy Documents</h2>
+                <p style="color: #6B7280; margin-bottom: 24px;">Access the complete PsychicSource strategy documentation with detailed implementation guides and templates.</p>
+                
+                <div class="docs-grid">
+                    <div class="doc-card">
+                        <div class="status-badge">complete</div>
+                        <div class="doc-header">
+                            <div class="doc-icon">🎯</div>
+                            <div class="doc-info">
+                                <div class="doc-title">Business Objectives & Target Audience</div>
+                                <div class="doc-category">Strategy</div>
+                            </div>
+                        </div>
+                        <div class="doc-description">
+                            Strategic objectives, success metrics, and detailed persona analysis for emotional conversion optimization.
+                        </div>
+                        <ul class="doc-features">
+                            <li>5 Strategic Objectives</li>
+                            <li>4 Primary Personas</li>
+                            <li>Success Metrics Framework</li>
+                            <li>Trust & Conversion Factors</li>
+                        </ul>
+                        <a href="https://docs.google.com/document/d/1uyWICfJ-eNbVfUpjdhHxsKA9Xv29AnQF2DpTa-jUyUE/edit?usp=sharing" target="_blank" class="doc-button">📖 View Document</a>
+                    </div>
+
+                    <div class="doc-card">
+                        <div class="status-badge">complete</div>
+                        <div class="doc-header">
+                            <div class="doc-icon">📝</div>
+                            <div class="doc-info">
+                                <div class="doc-title">Master Content Creation SOP</div>
+                                <div class="doc-category">Operations</div>
+                            </div>
+                        </div>
+                        <div class="doc-description">
+                            Step-by-step content creation workflow with AI transformation prompts and platform adaptation strategies.
+                        </div>
+                        <ul class="doc-features">
+                            <li>4 Content Pillars</li>
+                            <li>AI Transformation Prompts</li>
+                            <li>Platform-Specific Adaptations</li>
+                            <li>Weekly Planning Process</li>
+                        </ul>
+                        <a href="https://docs.google.com/document/d/1BRjXhIaL70gwZ733bJ7jX2xmTPMJKoYhhwXR9wsUVTU/edit?usp=sharing" target="_blank" class="doc-button">📖 View Document</a>
+                    </div>
+
+                    <div class="doc-card">
+                        <div class="status-badge">complete</div>
+                        <div class="doc-header">
+                            <div class="doc-icon">⚠️</div>
+                            <div class="doc-info">
+                                <div class="doc-title">Crisis Response System</div>
+                                <div class="doc-category">Crisis Management</div>
+                            </div>
+                        </div>
+                        <div class="doc-description">
+                            Real-time crisis monitoring and automated content deployment system for emotional trigger events.
+                        </div>
+                        <ul class="doc-features">
+                            <li>5 Crisis Categories</li>
+                            <li>24/7 AI Monitoring</li>
+                            <li>30-Minute Response Time</li>
+                            <li>Universal Response Templates</li>
+                        </ul>
+                        <a href="https://docs.google.com/document/d/1qQCErlWF6gmQ0JSFGE-6yKXnq_E-R4OTYiUJNPGYLpM/edit?usp=sharing" target="_blank" class="doc-button">📖 View Document</a>
+                    </div>
+
+                    <div class="doc-card">
+                        <div class="status-badge">complete</div>
+                        <div class="doc-header">
+                            <div class="doc-icon">⚙️</div>
+                            <div class="doc-info">
+                                <div class="doc-title">Implementation Options</div>
+                                <div class="doc-category">Implementation</div>
+                            </div>
+                        </div>
+                        <div class="doc-description">
+                            Comprehensive comparison of AI, hybrid, and human content creation approaches with detailed cost analysis.
+                        </div>
+                        <ul class="doc-features">
+                            <li>3 Main Approaches</li>
+                            <li>6 Detailed Scenarios</li>
+                            <li>Cost & Timeline Analysis</li>
+                            <li>Implementation Checklists</li>
+                        </ul>
+                        <a href="https://docs.google.com/document/d/1t5Msm50P78baeSDn4bJoqI2ZJIUR6sLEbLDMvA-uL_4/edit?usp=sharing" target="_blank" class="doc-button">📖 View Document</a>
+                    </div>
+                </div>
+
+                <div style="background: #F3F4F6; padding: 24px; border-radius: 12px; margin-top: 32px; border: 1px solid #E5E7EB;">
+                    <h3 style="color: #374151; margin-bottom: 16px;">📋 Quick Access Dashboard Sections</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                        <div onclick="showSection('overview')" style="background: white; padding: 16px; border-radius: 8px; text-align: center; border: 1px solid #E5E7EB; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(124, 58, 237, 0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <div style="font-size: 24px; margin-bottom: 8px;">🎯</div>
+                            <div style="font-weight: 600; color: #374151; margin-bottom: 4px;">Strategy Overview</div>
+                            <div style="font-size: 12px; color: #6B7280;">Business objectives & 4-pillar strategy</div>
+                        </div>
+                        <div onclick="showSection('personas')" style="background: white; padding: 16px; border-radius: 8px; text-align: center; border: 1px solid #E5E7EB; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(124, 58, 237, 0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <div style="font-size: 24px; margin-bottom: 8px;">👥</div>
+                            <div style="font-weight: 600; color: #374151; margin-bottom: 4px;">Target Personas</div>
+                            <div style="font-size: 12px; color: #6B7280;">Heartbroken Seeker, Grieving Soul, etc.</div>
+                        </div>
+                        <div onclick="showSection('content')" style="background: white; padding: 16px; border-radius: 8px; text-align: center; border: 1px solid #E5E7EB; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(124, 58, 237, 0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <div style="font-size: 24px; margin-bottom: 8px;">📝</div>
+                            <div style="font-weight: 600; color: #374151; margin-bottom: 4px;">Content Strategy</div>
+                            <div style="font-size: 12px; color: #6B7280;">Content pillars & transformation</div>
+                        </div>
+                        <div onclick="showSection('crisis')" style="background: white; padding: 16px; border-radius: 8px; text-align: center; border: 1px solid #E5E7EB; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(124, 58, 237, 0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                            <div style="font-size: 24px; margin-bottom: 8px;">🚨</div>
+                            <div style="font-weight: 600; color: #374151; margin-bottom: 4px;">Crisis Response</div>
+                            <div style="font-size: 12px; color: #6B7280;">Real-time monitoring & templates</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Strategy Overview -->
+            <div id="overview" class="section active">
+                <h2>🎯 Business Objectives</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>💰 Drive Paid Conversions</h3>
+                        <p>Turn emotionally triggered users into paying clients through emotional connection and clarity</p>
+                        <p><strong>Focus:</strong> Target users during emotional triggers (breakups, grief, spiritual crisis)</p>
+                        <p><strong>Strategy:</strong> Immediate response messaging during crisis moments</p>
+                    </div>
+                    <div class="card">
+                        <h3>🛡️ Establish Trust & Authority</h3>
+                        <p>Position as most emotionally intelligent, trustworthy psychic marketplace</p>
+                        <p><strong>Focus:</strong> Address skepticism through expert-backed content</p>
+                        <p><strong>Strategy:</strong> Emphasize screening processes and emotional safety</p>
+                    </div>
+                    <div class="card">
+                        <h3>⚡ Own Crisis Support Space</h3>
+                        <p>Become first brand users think of when life becomes uncertain</p>
+                        <p><strong>Focus:</strong> Dominate crisis-moment awareness</p>
+                        <p><strong>Strategy:</strong> Daily presence across TikTok, YouTube, Instagram</p>
+                    </div>
+                    <div class="card">
+                        <h3>🔄 Increase User Retention</h3>
+                        <p>Convert one-time users into repeat clients through nurturing content</p>
+                        <p><strong>Focus:</strong> Post-session nurturing and micro-content</p>
+                        <p><strong>Strategy:</strong> Email sequences and social retargeting</p>
+                    </div>
+                </div>
+
+                <h2>📊 4-Pillar Content Strategy</h2>
+                <div class="grid">
+                    <div class="card" style="border-left-color: #E67E22;">
+                        <h3>💔 Emotional Crossroads (60%)</h3>
+                        <p><em>"Where is your soul hurting?"</em></p>
+                        <p><strong>Timing:</strong> Monday-Wednesday</p>
+                        <p><strong>Target:</strong> Heartbroken Seeker, Grieving Soul</p>
+                        <p><strong>Content:</strong> TikTok Reels, SEO blogs, tarot readings</p>
+                    </div>
+                    <div class="card" style="border-left-color: #F39C12;">
+                        <h3>🌟 Daily Spiritual Support (20%)</h3>
+                        <p><em>"Bite-sized encouragement for everyday hope"</em></p>
+                        <p><strong>Timing:</strong> Thursday-Saturday</p>
+                        <p><strong>Target:</strong> All personas</p>
+                        <p><strong>Content:</strong> Interactive guidance, routine practices</p>
+                    </div>
+                    <div class="card" style="border-left-color: #27AE60;">
+                        <h3>🛡️ Trust & Authority Building (10%)</h3>
+                        <p><em>"Can I really trust a psychic online?"</em></p>
+                        <p><strong>Timing:</strong> Wednesday</p>
+                        <p><strong>Target:</strong> Curious Skeptic, Life Path Seeker</p>
+                        <p><strong>Content:</strong> Educational FAQs, explainers</p>
+                    </div>
+                    <div class="card" style="border-left-color: #3498DB;">
+                        <h3>✨ Transformation & Social Proof (10%)</h3>
+                        <p><em>"Real stories, real growth, real change"</em></p>
+                        <p><strong>Timing:</strong> Tuesday</p>
+                        <p><strong>Target:</strong> All personas</p>
+                        <p><strong>Content:</strong> Testimonials, case studies</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Target Personas -->
+            <div id="personas" class="section">
+                <h2>👥 Target Personas</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>💔 The Heartbroken Seeker</h3>
+                        <p><strong>Demographics:</strong> Age 25-40, Female, Income $35K-$65K, Single/newly separated</p>
+                        <p><strong>Pain Points:</strong> Recent breakup, ghosting, toxic relationship cycles. Wants closure, reassurance, or to know "if he's coming back"</p>
+                        <p><strong>Digital Behavior:</strong> TikTok, Instagram Reels, YouTube Shorts</p>
+                        <p><strong>Searches:</strong> "Why did he leave me?" "Twin flame runner meaning"</p>
+                        <p><strong>Journey Stage:</strong> Mid-to-late (actively searching: "I need answers now")</p>
+                    </div>
+                    <div class="card">
+                        <h3>🕊️ The Grieving Soul</h3>
+                        <p><strong>Demographics:</strong> Age 35-55, Female, Income $50K-$90K, Suburban, caretaker role</p>
+                        <p><strong>Pain Points:</strong> Loss of parent, sibling, child, partner, or pet. Experiences "weird dreams" or sense someone is still near</p>
+                        <p><strong>Digital Behavior:</strong> YouTube (guided content), Facebook groups, Pinterest, Google</p>
+                        <p><strong>Searches:</strong> "Signs from the afterlife," "How to talk to someone who passed"</p>
+                        <p><strong>Journey Stage:</strong> Late stage (ready to speak with a medium)</p>
+                    </div>
+                    <div class="card">
+                        <h3>🧭 The Life Path Seeker</h3>
+                        <p><strong>Demographics:</strong> Age 30-50, Mixed gender, Income $45K-$90K, College educated, career-stalled</p>
+                        <p><strong>Pain Points:</strong> Feels lost, burned out, "meant for more." Job transitions, quarter/midlife crisis</p>
+                        <p><strong>Digital Behavior:</strong> YouTube, Reddit, Instagram Carousels, Medium, Podcasts</p>
+                        <p><strong>Searches:</strong> "Should I quit my job?" "What is my soul purpose?"</p>
+                        <p><strong>Journey Stage:</strong> Early to mid (researching spiritual resources)</p>
+                    </div>
+                    <div class="card">
+                        <h3>🤔 The Curious Skeptic</h3>
+                        <p><strong>Demographics:</strong> Age 25-40, Mixed gender, Income $40K-$85K, Tech-savvy, analytical</p>
+                        <p><strong>Pain Points:</strong> High-pressure life moments when logic fails. Looking for new tools during crisis</p>
+                        <p><strong>Digital Behavior:</strong> Reddit, Google (FAQ-focused), YouTube explainers</p>
+                        <p><strong>Searches:</strong> Stumbles into psychic content via influencers or testimonials</p>
+                        <p><strong>Journey Stage:</strong> Early (needs education, credibility before converting)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Focus Calendar -->
+            <div id="calendar" class="section">
+                <h2>📅 Weekly Focus Rotation Strategy</h2>
+                <p style="color: #6B7280; margin-bottom: 24px;">4-week rotation cycle with strategic focus areas while maintaining the 60/20/10/10 pillar distribution.</p>
+                
+                <div class="focus-legend">
+                    <h3 style="color: #374151; margin-bottom: 16px;">📋 Content Pillar Legend</h3>
+                    <div class="legend-grid">
+                        <div class="legend-item">
+                            <div class="legend-color crisis-color"></div>
+                            <div>
+                                <div style="font-weight: 600; color: #374151;">Crisis Content (60%)</div>
+                                <div style="font-size: 12px; color: #6B7280;">Emotional Crossroads</div>
+                            </div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color support-color"></div>
+                            <div>
+                                <div style="font-weight: 600; color: #374151;">Daily Support (20%)</div>
+                                <div style="font-size: 12px; color: #6B7280;">Routine Spiritual Guidance</div>
+                            </div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color trust-color"></div>
+                            <div>
+                                <div style="font-weight: 600; color: #374151;">Trust Building (10%)</div>
+                                <div style="font-size: 12px; color: #6B7280;">Credibility & Authority</div>
+                            </div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color proof-color"></div>
+                            <div>
+                                <div style="font-weight: 600; color: #374151;">Social Proof (10%)</div>
+                                <div style="font-size: 12px; color: #6B7280;">Success Stories & Testimonials</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Week 1: Love & Relationships -->
+                <div class="calendar-week">
+                    <div class="week-header">
+                        <div class="week-title">💕 Week 1: Love & Relationships Focus</div>
+                        <div class="week-subtitle">Primary focus on romantic relationships, twin flames, and dating crises</div>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="calendar-header">Day</div>
+                        <div class="calendar-header">Morning (Crisis)</div>
+                        <div class="calendar-header">Afternoon (Support/Trust/Proof)</div>
+                        <div class="calendar-header">Evening (Crisis)</div>
+                        
+                        <div class="day-cell">MON</div>
+                        <div class="content-cell crisis-content">Love & Relationships</div>
+                        <div class="content-cell support-content">Daily Support (Love Tarot)</div>
+                        <div class="content-cell crisis-content">Career & Financial</div>
+                        
+                        <div class="day-cell">TUE</div>
+                        <div class="content-cell crisis-content">Love & Relationships</div>
+                        <div class="content-cell trust-content">Trust Building (Love Readings)</div>
+                        <div class="content-cell crisis-content">Love & Relationships</div>
+                        
+                        <div class="day-cell">WED</div>
+                        <div class="content-cell crisis-content">Career & Financial</div>
+                        <div class="content-cell support-content">Daily Support (Money Crystals)</div>
+                        <div class="content-cell crisis-content">Love & Relationships</div>
+                        
+                        <div class="day-cell">THU</div>
+                        <div class="content-cell crisis-content">Grief & Loss</div>
+                        <div class="content-cell proof-content">Social Proof (Love Success)</div>
+                        <div class="content-cell crisis-content">Love & Relationships</div>
+                        
+                        <div class="day-cell">FRI</div>
+                        <div class="content-cell crisis-content">Love & Relationships</div>
+                        <div class="content-cell support-content">Daily Support (Weekend Love)</div>
+                        <div class="content-cell crisis-content">Career & Financial</div>
+                        
+                        <div class="day-cell">SAT</div>
+                        <div class="content-cell crisis-content">Family Relationships</div>
+                        <div class="content-cell support-content">Daily Support (Self-Love)</div>
+                        <div class="content-cell trust-content">Trust Building (Relationship)</div>
+                        
+                        <div class="day-cell">SUN</div>
+                        <div class="content-cell crisis-content">Love & Relationships</div>
+                        <div class="content-cell proof-content">Social Proof (Breakup Recovery)</div>
+                        <div class="content-cell crisis-content">Mental Health Crisis</div>
+                    </div>
+                    <div class="pillar-summary">
+                        <h4 style="color: #374151; margin-bottom: 12px;">Week 1 Pillar Distribution</h4>
+                        <div class="pillar-stats">
+                            <div class="pillar-stat">
+                                <div class="stat-label">Emotional Crossroads</div>
+                                <div class="stat-number">13 posts (62%)</div>
+                                <div class="tier-breakdown">Love & Relationships: 7 | Career & Financial: 3 | Others: 3</div>
+                            </div>
+                            <div class="pillar-stat">
+                                <div class="stat-label">Daily Support</div>
+                                <div class="stat-number">4 posts (19%)</div>
+                                <div class="tier-breakdown">Routine spiritual guidance and affirmations</div>
+                            </div>
+                            <div class="pillar-stat">
+                                <div class="stat-label">Trust Building</div>
+                                <div class="stat-number">2 posts (10%)</div>
+                                <div class="tier-breakdown">Credibility and authority content</div>
+                            </div>
+                            <div class="pillar-stat">
+                                <div class="stat-label">Social Proof</div>
+                                <div class="stat-number">2 posts (10%)</div>
+                                <div class="tier-breakdown">Success stories and testimonials</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Week 2: Career & Financial -->
+                <div class="calendar-week">
+                    <div class="week-header">
+                        <div class="week-title">💼 Week 2: Career & Financial Crisis Focus</div>
+                        <div class="week-subtitle">Primary focus on job stress, money problems, and career transitions</div>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="calendar-header">Day</div>
+                        <div class="calendar-header">Morning (Crisis)</div>
+                        <div class="calendar-header">Afternoon (Support/Trust/Proof)</div>
+                        <div class="calendar-header">Evening (Crisis)</div>
+                        
+                        <div class="day-cell">MON</div>
+                        <div class="content-cell crisis-content">Career & Financial</div>
+                        <div class="content-cell support-content">Daily Support (Career Tarot)</div>
+                        <div class="content-cell crisis-content">Love & Relationships</div>
+                        
+                        <div class="day-cell">TUE</div>
+                        <div class="content-cell crisis-content">Career & Financial</div>
+                        <div class="content-cell trust-content">Trust Building (Money Readings)</div>
+                        <div class="content-cell crisis-content">Career & Financial</div>
+                        
+                        <div class="day-cell">WED</div>
+                        <div class="content-cell crisis-content">Love & Relationships</div>
+                        <div class="content-cell support-content">Daily Support (Abundance)</div>
+                        <div class="content-cell crisis-content">Career & Financial</div>
+                        
+                        <div class="day-cell">THU</div>
+                        <div class="content-cell crisis-content">Mental Health Crisis</div>
+                        <div class="content-cell proof-content">Social Proof (Career Success)</div>
+                        <div class="content-cell crisis-content">Career & Financial</div>
+                        
+                        <div class="day-cell">FRI</div>
+                        <div class="content-cell crisis-content">Career & Financial</div>
+                        <div class="content-cell support-content">Daily Support (Work Stress)</div>
+                        <div class="content-cell crisis-content">Love & Relationships</div>
+                        
+                        <div class="day-cell">SAT</div>
+                        <div class="content-cell crisis-content">Life Transitions</div>
+                        <div class="content-cell support-content">Daily Support (Purpose)</div>
+                        <div class="content-cell trust-content">Trust Building (Career)</div>
+                        
+                        <div class="day-cell">SUN</div>
+                        <div class="content-cell crisis-content">Career & Financial</div>
+                        <div class="content-cell proof-content">Social Proof (Financial Recovery)</div>
+                        <div class="content-cell crisis-content">Life Transitions</div>
+                    </div>
+                    <div class="pillar-summary">
+                        <h4 style="color: #374151; margin-bottom: 12px;">Week 2 Pillar Distribution</h4>
+                        <div class="pillar-stats">
+                            <div class="pillar-stat">
+                                <div class="stat-label">Emotional Crossroads</div>
+                                <div class="stat-number">13 posts (62%)</div>
+                                <div class="tier-breakdown">Career & Financial: 7 | Love & Relationships: 3 | Others: 3</div>
+                            </div>
+                            <div class="pillar-stat">
+                                <div class="stat-label">Daily Support</div>
+                                <div class="stat-number">4 posts (19%)</div>
+                                <div class="tier-breakdown">Work stress and abundance guidance</div>
+                            </div>
+                            <div class="pillar-stat">
+                                <div class="stat-label">Trust Building</div>
+                                <div class="stat-number">2 posts (10%)</div>
+                                <div class="tier-breakdown">Career and money reading credibility</div>
+                            </div>
+                            <div class="pillar-stat">
+                                <div class="stat-label">Social Proof</div>
+                                <div class="stat-number">2 posts (10%)</div>
+                                <div class="tier-breakdown">Career and financial success stories</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Week 3: Grief & Loss -->
+                <div class="calendar-week">
+                    <div class="week-header">
+                        <div class="week-title">🕊️ Week 3: Grief & Loss Focus</div>
+                        <div class="week-subtitle">Primary focus on death, loss, mediumship, and healing journeys</div>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="calendar-header">Day</div>
+                        <div class="calendar-header">Morning (Crisis)</div>
+                        <div class="calendar-header">Afternoon (Support/Trust/Proof)</div>
+                        <div class="calendar-header">Evening (Crisis)</div>
+                        
+                        <div class="day-cell">MON</div>
+                        <div class="content-cell crisis-content">Grief & Loss</div>
+                        <div class="content-cell support-content">Daily Support (Healing Crystals)</div>
+                        <div class="content-cell crisis-content">Love & Relationships</div>
+                        
+                        <div class="day-cell">TUE</div>
+                        <div class="content-cell crisis-content">Grief & Loss</div>
+                        <div class="content-cell trust-content">Trust Building (Mediumship)</div>
+                        <div class="content-cell crisis-content">Career & Financial</div>
+                        
+                        <div class="day-cell">WED</div>
+                        <div class="content-cell crisis-content">Love & Relationships</div>
+                        <div class="content-cell support-content">Daily Support (Spirit Signs)</div>
+                        <div class="content-cell crisis-content">Grief & Loss</div>
+                        
+                        <div class="day-cell">THU</div>
+                        <div class="content-cell crisis-content">Family Relationships</div>
+                        <div class="content-cell proof-content">Social Proof (Mediumship Success)</div>
+                        <div class="content-cell crisis-content">Grief & Loss</div>
+                        
+                        <div class="day-cell">FRI</div>
+                        <div class="content-cell crisis-content">Grief & Loss</div>
+                        <div class="content-cell support-content">Daily Support (Memorial Ritual)</div>
+                        <div class="content-cell crisis-content">Love & Relationships</div>
+                        
+                        <div class="day-cell">SAT</div>
+                        <div class="content-cell crisis-content">Career & Financial</div>
+                        <div class="content-cell support-content">Daily Support (Ancestor Guidance)</div>
+                        <div class="content-cell trust-content">Trust Building (Medium)</div>
+                        
+                        <div class="day-cell">SUN</div>
+                        <div class="content-cell crisis-content">Grief & Loss</div>
+                        <div class="content-cell proof-content">Social Proof (Healing Journey)</div>
+                        <div class="content-cell crisis-content">Mental Health Crisis</div>
+                    </div>
+                    <div class="pillar-summary">
+                        <h4 style="color: #374151; margin-bottom: 12px;">Week 3 Pillar Distribution</h4>
+                        <div class="pillar-stats">
+                            <div class="pillar-stat">
+                                <div class="stat-label">Emotional Crossroads</div>
+                                <div class="stat-number">13 posts (62%)</div>
+                                <div class="tier-breakdown">Grief & Loss: 6 | Love & Relationships: 3 | Others: 4</div>
+                            </div>
+                            <div class="pillar-stat">
+                                <div class="stat-label">Daily Support</div>
+                                <div class="stat-number">4 posts (19%)</div>
+                                <div class="tier-breakdown">Healing rituals and spirit communication</div>
+                            </div>
+                            <div class="pillar-stat">
+                                <div class="stat-label">Trust Building</div>
+                                <div class="stat-number">2 posts (10%)</div>
+                                <div class="tier-breakdown">Mediumship credibility and authenticity</div>
+                            </div>
+                            <div class="pillar-stat">
+                                <div class="stat-label">Social Proof</div>
+                                <div class="stat-number">2 posts (10%)</div>
+                                <div class="tier-breakdown">Healing and mediumship success stories</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Week 4: Family & Personal Relationships -->
+                <div class="calendar-week">
+                    <div class="week-header">
+                        <div class="week-title">👨‍👩‍👧‍👦 Week 4: Family & Personal Relationships Focus</div>
+                        <div class="week-subtitle">Primary focus on family dynamics, toxic relationships, and boundaries</div>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="calendar-header">Day</div>
+                        <div class="calendar-header">Morning (Crisis)</div>
+                        <div class="calendar-header">Afternoon (Support/Trust/Proof)</div>
+                        <div class="calendar-header">Evening (Crisis)</div>
+                        
+                        <div class="day-cell">MON</div>
+                        <div class="content-cell crisis-content">Family Relationships</div>
+                        <div class="content-cell support-content">Daily Support (Family Healing)</div>
+                        <div class="content-cell crisis-content">Love & Relationships</div>
+                        
+                        <div class="day-cell">TUE</div>
+                        <div class="content-cell crisis-content">Family Relationships</div>
+                        <div class="content-cell trust-content">Trust Building (Family Dynamics)</div>
+                        <div class="content-cell crisis-content">Career & Financial</div>
+                        
+                        <div class="day-cell">WED</div>
+                        <div class="content-cell crisis-content">Love & Relationships</div>
+                        <div class="content-cell support-content">Daily Support (Boundary Setting)</div>
+                        <div class="content-cell crisis-content">Family Relationships</div>
+                        
+                        <div class="day-cell">THU</div>
+                        <div class="content-cell crisis-content">Life Transitions</div>
+                        <div class="content-cell proof-content">Social Proof (Family Healing)</div>
+                        <div class="content-cell crisis-content">Family Relationships</div>
+                        
+                        <div class="day-cell">FRI</div>
+                        <div class="content-cell crisis-content">Family Relationships</div>
+                        <div class="content-cell support-content">Daily Support (Holiday Prep)</div>
+                        <div class="content-cell crisis-content">Love & Relationships</div>
+                        
+                        <div class="day-cell">SAT</div>
+                        <div class="content-cell crisis-content">Mental Health Crisis</div>
+                        <div class="content-cell support-content">Daily Support (Self-Care)</div>
+                        <div class="content-cell trust-content">Trust Building (Therapy vs Psychic)</div>
+                        
+                        <div class="day-cell">SUN</div>
+                        <div class="content-cell crisis-content">Family Relationships</div>
+                        <div class="content-cell proof-content">Social Proof (Toxic Family Recovery)</div>
+                        <div class="content-cell crisis-content">Life Transitions</div>
+                    </div>
+                    <div class="pillar-summary">
+                        <h4 style="color: #374151; margin-bottom: 12px;">Week 4 Pillar Distribution</h4>
+                        <div class="pillar-stats">
+                            <div class="pillar-stat">
+                                <div class="stat-label">Emotional Crossroads</div>
+                                <div class="stat-number">12 posts (60%)</div>
+                                <div class="tier-breakdown">Family Relationships: 6 | Love & Relationships: 3 | Others: 3</div>
+                            </div>
+                            <div class="pillar-stat">
+                                <div class="stat-label">Daily Support</div>
+                                <div class="stat-number">5 posts (25%)</div>
+                                <div class="tier-breakdown">Family healing and boundary setting</div>
+                            </div>
+                            <div class="pillar-stat">
+                                <div class="stat-label">Trust Building</div>
+                                <div class="stat-number">2 posts (10%)</div>
+                                <div class="tier-breakdown">Family dynamics and therapeutic approaches</div>
+                            </div>
+                            <div class="pillar-stat">
+                                <div class="stat-label">Social Proof</div>
+                                <div class="stat-number">2 posts (10%)</div>
+                                <div class="tier-breakdown">Family healing and recovery success stories</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Strategy -->
+            <div id="content" class="section">
+                <h2>🔄 Content Transformation Process</h2>
+                <div class="card">
+                    <h3>Example: Life Path Numbers Topic Transformation</h3>
+                    <p><strong>Original Topic:</strong> "How Your Life Path Number Affects Your Career Choices"</p>
+                    <br>
+                    <p><strong>Crisis Version (60%):</strong> "Why You HATE Your Job: Your Life Path Number Says You're in the WRONG Career"</p>
+                    <p><strong>Daily Support Version (20%):</strong> "Your Life Path Number Career Message for This Week"</p>
+                    <p><strong>Trust Building Version (10%):</strong> "How Real Psychics Use Life Path Numbers in Career Readings (vs. Fake Ones)"</p>
+                    <p><strong>Social Proof Version (10%):</strong> "How Discovering Her Life Path Number Led Sarah to Her Dream Career in 60 Days"</p>
+                </div>
+
+                <h2>🎯 Crisis Language Bank</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>🚨 Crisis Language</h3>
+                        <span class="tag">RIGHT NOW</span>
+                        <span class="tag">immediately</span>
+                        <span class="tag">emergency</span>
+                        <span class="tag">breaking point</span>
+                        <span class="tag">24 hours</span>
+                        <span class="tag">can't stop</span>
+                    </div>
+                    <div class="card">
+                        <h3>💼 Career Crisis</h3>
+                        <span class="tag">miserable at work</span>
+                        <span class="tag">dying inside</span>
+                        <span class="tag">Sunday scaries</span>
+                        <span class="tag">work feels like prison</span>
+                        <span class="tag">wrong career</span>
+                        <span class="tag">wasting your life</span>
+                    </div>
+                    <div class="card">
+                        <h3>💰 Financial Crisis</h3>
+                        <span class="tag">broke</span>
+                        <span class="tag">desperate</span>
+                        <span class="tag">can't pay bills</span>
+                        <span class="tag">financial hell</span>
+                        <span class="tag">tired of being poor</span>
+                        <span class="tag">financial breaking point</span>
+                    </div>
+                    <div class="card">
+                        <h3>💔 Emotional Crisis</h3>
+                        <span class="tag">spiraling</span>
+                        <span class="tag">panicking</span>
+                        <span class="tag">exhausted</span>
+                        <span class="tag">haunting you</span>
+                        <span class="tag">sabotaging you</span>
+                        <span class="tag">always happens</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Platform Strategy -->
+            <div id="platforms" class="section">
+                <h2>📱 Platform-Specific Strategies</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>📱 TikTok: Crisis & Immediate Validation</h3>
+                        <p>• Raw, authentic, immediate emotional content</p>
+                        <p>• 3-second hook window before scroll</p>
+                        <p>• POV format for crisis content</p>
+                        <p>• Primary personas: Heartbroken Seeker, Manifestation Believer</p>
+                        <p><strong>Best Formats:</strong></p>
+                        <p>Crisis: "POV: You're [crisis situation] and [spiritual explanation]"</p>
+                        <p>Daily: "Pick a crystal for your Monday guidance"</p>
+                    </div>
+                    <div class="card">
+                        <h3>📷 Instagram: Visual Storytelling & Community</h3>
+                        <p>• High-quality graphics with consistent branding</p>
+                        <p>• Carousel format for educational content</p>
+                        <p>• Stories for daily engagement and polls</p>
+                        <p>• Focus on aesthetic and shareable content</p>
+                        <p><strong>Content Types:</strong></p>
+                        <p>Feed: Educational carousels, quote graphics</p>
+                        <p>Stories: Pick-a-card series, crisis check-ins</p>
+                    </div>
+                    <div class="card">
+                        <h3>🎥 YouTube: Education & Authority Building</h3>
+                        <p>• Long-form educational content (10-15 min)</p>
+                        <p>• Search-driven discovery behavior</p>
+                        <p>• Authority building through expertise</p>
+                        <p>• Primary personas: Curious Skeptic, Life Path Seeker</p>
+                        <p><strong>Structure Example:</strong></p>
+                        <p>0:00-0:30: Hook + Crisis validation</p>
+                        <p>2:00-8:00: Educational explanation</p>
+                    </div>
+                    <div class="card">
+                        <h3>📝 Blog/SEO: Authority & Search Discovery</h3>
+                        <p>• Crisis keyword optimization</p>
+                        <p>• 1500-2000 word comprehensive guides</p>
+                        <p>• Featured snippet targeting</p>
+                        <p>• Trust building through expertise</p>
+                        <p><strong>Target Keywords:</strong></p>
+                        <p>"Why am I always broke" + spiritual perspective</p>
+                        <p>"Signs he's not coming back" + psychic insight</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seasonal Planning -->
+            <div id="seasonal" class="section">
+                <h2>📅 Seasonal Crisis Calendar</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>January - New Year Depression Peak</h3>
+                        <p>• Resolution failure</p>
+                        <p>• Post-holiday crash</p>
+                        <p>• Financial stress</p>
+                        <p>• Life purpose confusion</p>
+                    </div>
+                    <div class="card">
+                        <h3>February - Valentine's Emotional Intensity</h3>
+                        <p>• Valentine's Day loneliness</p>
+                        <p>• Relationship pressure</p>
+                        <p>• Love manifestation desperation</p>
+                        <p>• Relationship comparison</p>
+                    </div>
+                    <div class="card">
+                        <h3>March - Seasonal Transition Anxiety</h3>
+                        <p>• Spring anxiety</p>
+                        <p>• Fresh starts overwhelm</p>
+                        <p>• Tax season stress</p>
+                        <p>• Seasonal depression lifting</p>
+                    </div>
+                    <div class="card">
+                        <h3>April - Family Holiday Tensions</h3>
+                        <p>• Easter family conflicts</p>
+                        <p>• Religious spiritual conflicts</p>
+                        <p>• Holiday gathering stress</p>
+                        <p>• Fertility struggles</p>
+                    </div>
+                    <div class="card">
+                        <h3>May - Mother's Day Complex Emotions</h3>
+                        <p>• Mother's Day grief</p>
+                        <p>• Complicated mother relationships</p>
+                        <p>• Fertility pain highlighted</p>
+                        <p>• Mother wound healing</p>
+                    </div>
+                    <div class="card">
+                        <h3>June - Graduation & Summer Transitions</h3>
+                        <p>• Quarter-life crisis</p>
+                        <p>• Career pressure</p>
+                        <p>• Wedding season loneliness</p>
+                        <p>• Summer FOMO begins</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Crisis Response -->
+            <div id="crisis" class="section">
+                <h2>🚨 Crisis Response System</h2>
+                <p><strong>Core Strategy:</strong> Real-time content creation that captures trending emotional events for maximum reach and immediate conversion opportunities.</p>
+                
+                <h2>⚡ Crisis Trigger Categories</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>🌟 Celebrity & Public Figure Crises</h3>
+                        <p>• Celebrity deaths (unexpected/suicide/overdose)</p>
+                        <p>• High-profile divorces and breakups</p>
+                        <p>• Cheating scandals and betrayals</p>
+                        <p>• Mental health breakdowns going public</p>
+                        <p>• Career destruction/cancellation events</p>
+                    </div>
+                    <div class="card">
+                        <h3>💰 Economic & Financial Crises</h3>
+                        <p>• Stock market crashes</p>
+                        <p>• Mass layoffs and company closures</p>
+                        <p>• Inflation spikes affecting daily life</p>
+                        <p>• Housing affordability crises</p>
+                        <p>• Cryptocurrency collapses</p>
+                    </div>
+                    <div class="card">
+                        <h3>🌍 Natural Disasters & Global Events</h3>
+                        <p>• Major earthquakes, hurricanes, wildfires</p>
+                        <p>• Political upheaval and elections</p>
+                        <p>• International conflicts and wars</p>
+                        <p>• Pandemic developments</p>
+                        <p>• Social justice movements</p>
+                    </div>
+                    <div class="card">
+                        <h3>📱 Social Media Viral Moments</h3>
+                        <p>• Viral relationship drama</p>
+                        <p>• TikTok breakup videos trending</p>
+                        <p>• Mental health advocacy moments</p>
+                        <p>• Dating horror stories trending</p>
+                        <p>• Therapy/healing content going viral</p>
+                    </div>
+                </div>
+
+                <h2>🔍 Crisis Monitoring Keywords</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>💔 Relationship & Love</h3>
+                        <span class="tag">divorce</span>
+                        <span class="tag">breakup</span>
+                        <span class="tag">cheating</span>
+                        <span class="tag">heartbreak</span>
+                        <span class="tag">ghosted</span>
+                        <span class="tag">toxic relationship</span>
+                        <span class="tag">betrayal</span>
+                        <span class="tag">separation</span>
+                    </div>
+                    <div class="card">
+                        <h3>🧠 Mental Health & Emotional</h3>
+                        <span class="tag">depression</span>
+                        <span class="tag">anxiety</span>
+                        <span class="tag">overwhelmed</span>
+                        <span class="tag">panic</span>
+                        <span class="tag">breakdown</span>
+                        <span class="tag">struggling</span>
+                        <span class="tag">hopeless</span>
+                        <span class="tag">burnt out</span>
+                    </div>
+                    <div class="card">
+                        <h3>💰 Financial & Career</h3>
+                        <span class="tag">broke</span>
+                        <span class="tag">fired</span>
+                        <span class="tag">layoffs</span>
+                        <span class="tag">recession</span>
+                        <span class="tag">bankruptcy</span>
+                        <span class="tag">job loss</span>
+                        <span class="tag">financial stress</span>
+                        <span class="tag">money problems</span>
+                    </div>
+                    <div class="card">
+                        <h3>💀 Death & Grief</h3>
+                        <span class="tag">died</span>
+                        <span class="tag">death</span>
+                        <span class="tag">passed away</span>
+                        <span class="tag">grief</span>
+                        <span class="tag">mourning</span>
+                        <span class="tag">loss</span>
+                        <span class="tag">memorial</span>
+                        <span class="tag">funeral</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Implementation -->
+            <div id="implementation" class="section">
+                <h2>⚙️ Implementation Options</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>🤖 Option A: 100% AI Content</h3>
+                        <p><strong>A1: AI on Existing Brand</strong></p>
+                        <p>Investment: $200-300/month | Timeline: Immediate</p>
+                        <p>Best for: Educational content, consistent messaging</p>
+                        <br>
+                        <p><strong>A2: AI on New Channels</strong></p>
+                        <p>Investment: $200-800/month | Timeline: 3+ months</p>
+                        <p>Best for: Testing strategies, niche topics</p>
+                    </div>
+                    <div class="card">
+                        <h3>🤝 Option B: Hybrid Approach</h3>
+                        <p><strong>B1: Human Face + AI Support</strong></p>
+                        <p>Investment: $1,500-4,000/month | Timeline: 3-6 months</p>
+                        <p>Best for: Authentic connection with scalability</p>
+                        <br>
+                        <p><strong>B2: AI-First with Human Backup</strong></p>
+                        <p>Investment: $1,000-3,000/month | Timeline: 1-2 months</p>
+                        <p>Best for: Cost-effective scaling with human touch</p>
+                    </div>
+                    <div class="card">
+                        <h3>👤 Option C: 100% Human Content</h3>
+                        <p><strong>C1: Single Brand Spokesperson</strong></p>
+                        <p>Investment: $1,500-3,000/month | Timeline: 2-3 months</p>
+                        <p>Best for: Premium positioning, emotional crisis content</p>
+                        <br>
+                        <p><strong>C2: Rotating Human Creators</strong></p>
+                        <p>Investment: $3,000-6,000/month | Timeline: 2-3 months</p>
+                        <p>Best for: Large content volume, diverse expertise</p>
+                    </div>
+                </div>
+
+                <h2>📋 Crisis Response Timeline</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>🚨 0-30 Minutes - Immediate Response</h3>
+                        <p>✓ Crisis detected</p>
+                        <p>✓ Template selected</p>
+                        <p>✓ Content generated</p>
+                        <p>✓ Posted to TikTok/Instagram</p>
+                        <p>✓ Email triggered</p>
+                    </div>
+                    <div class="card">
+                        <h3>⚡ 30-60 Minutes - Rapid Follow-up</h3>
+                        <p>✓ YouTube Shorts deployed</p>
+                        <p>✓ Instagram Stories launched</p>
+                        <p>✓ Blog post published</p>
+                        <p>✓ Social monitoring begins</p>
+                        <p>✓ Engagement tracking</p>
+                    </div>
+                    <div class="card">
+                        <h3>📈 1-4 Hours - Extended Response</h3>
+                        <p>✓ Long-form YouTube video</p>
+                        <p>✓ Email follow-up sent</p>
+                        <p>✓ Community support</p>
+                        <p>✓ Reading offers deployed</p>
+                        <p>✓ Performance monitoring</p>
+                    </div>
+                    <div class="card">
+                        <h3>🔄 4-24 Hours - Ongoing Monitoring</h3>
+                        <p>✓ Performance tracking</p>
+                        <p>✓ Comment engagement</p>
+                        <p>✓ Crisis development monitoring</p>
+                        <p>✓ Conversion tracking</p>
+                        <p>✓ Content optimization</p>
+                    </div>
+                </div>
+
+                <h2>🎯 Crisis Response Best Practices</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>❌ Never Do</h3>
+                        <p>• Exploit tragedy for marketing purposes</p>
+                        <p>• Mention specific suicide methods</p>
+                        <p>• Make false promises or guarantees</p>
+                        <p>• Take political sides on controversial events</p>
+                        <p>• Reproduce copyrighted content</p>
+                    </div>
+                    <div class="card">
+                        <h3>✅ Always Do</h3>
+                        <p>• Lead with genuine support and empathy</p>
+                        <p>• Include crisis resources when appropriate</p>
+                        <p>• Validate emotions before offering solutions</p>
+                        <p>• Provide hope without toxic positivity</p>
+                        <p>• Respect cultural and religious sensitivities</p>
+                    </div>
+                    <div class="card">
+                        <h3>⚠️ Sensitivity Guidelines</h3>
+                        <p>• Death/suicide: Maximum compassion, include resources</p>
+                        <p>• Economic: Focus on spiritual vs material security</p>
+                        <p>• Relationships: Address fears without feeding paranoia</p>
+                        <p>• Natural disasters: Honor those affected</p>
+                        <p>• Mental health: Combine professional help with spiritual guidance</p>
+                    </div>
+                    <div class="card">
+                        <h3>🎯 Conversion Guidelines</h3>
+                        <p>• Natural transition to psychic guidance services</p>
+                        <p>• Match CTA intensity to crisis sensitivity level</p>
+                        <p>• Use crisis-appropriate timing for offers</p>
+                        <p>• Avoid appearing exploitative of vulnerable moments</p>
+                        <p>• Focus on genuine help first, conversion second</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            var sections = document.querySelectorAll('.section');
+            for (var i = 0; i < sections.length; i++) {
+                sections[i].classList.remove('active');
+            }
+            
+            // Remove active class from all tabs
+            var tabs = document.querySelectorAll('.tab');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Make clicked tab active
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
